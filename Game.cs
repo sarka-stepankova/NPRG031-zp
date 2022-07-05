@@ -10,12 +10,16 @@ using System.Windows.Forms;
 
 namespace PacMan
 {
-    public partial class Form1 : Form
+    public partial class Game : Form
     {
-        public Form1()
+        public Game()
         {
             InitializeComponent();
+        }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
