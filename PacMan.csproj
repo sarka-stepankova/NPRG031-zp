@@ -125,5 +125,11 @@
   <ItemGroup>
     <None Include="Resources\pacdx.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\brick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\empty.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
