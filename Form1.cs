@@ -15,6 +15,7 @@ namespace PacMan
         public Form1()
         {
             InitializeComponent();
+
         }
     }
 }
