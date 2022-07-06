@@ -47,8 +47,8 @@ namespace PacMan
         }
 
         Map map;
-        Graphics g;
         Pacman pac;
+        PressedDirection docasnySmer = PressedDirection.no;
         private void playGame2_Click(object sender, EventArgs e)
         {
             pacMan.Visible = false;
@@ -70,17 +70,32 @@ namespace PacMan
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            pac.rdup = false;
-            pac.rddown = false;
-            pac.rdleft = false;
-            pac.rdright = false;
-
-            // na timer posunout ducha ve smeru ve kterym zrovna bylo zmacknuty tlacitko
             // proste posouvat ducha na smer
-
+            // duch ma nejaky smer a je zmacknute nejake tlacitko, kdyz muze jit tam 
+            // kde je zmacknuty tlacitko, tak tam jde a ziska novy smer, jinak jde ve svem smeru
+            if (pac.isFree(map, pac.y - 1, pac.x) && pac.smer == PressedDirection.up)
+            {
+                map.board[pac.y][pac.x] = ' ';
+                pac.y -= 1;
+            }
+            if (pac.isFree(map, pac.y + 1, pac.x) && pac.smer == PressedDirection.down) 
+            {
+                map.board[pac.y][pac.x] = ' ';
+                pac.y += 1;
+            }
+            if (pac.isFree(map, pac.y, pac.x - 1) && pac.smer == PressedDirection.left)
+            {
+                map.board[pac.y][pac.x] = ' ';
+                pac.x -= 1;
+            }
+            if (pac.isFree(map, pac.y, pac.x + 1) && pac.smer == PressedDirection.right)  
+            {
+                map.board[pac.y][pac.x] = ' ';
+                pac.x += 1;
+            }
 
             //switch (map.stav)
-            
+
             this.Refresh();
         }
 
@@ -91,43 +106,22 @@ namespace PacMan
             
             if (keyData == Keys.Up)
             {
-                if (!pac.rdup && pac.isFree(map, pac.y-1, pac.x))  // rd = redraw
-                {
-                    map.board[pac.y][pac.x] = ' ';
-                    //map.board[pac.y - 1][pac.x] = 'P';
-                    pac.y -= 1;
-                    pac.rdup = true;
-                }
+                pac.smer = PressedDirection.up;
                 return true;
             }
             if (keyData == Keys.Down)
             {
-                if (!pac.rddown && pac.isFree(map, pac.y + 1, pac.x))  // rd = redraw
-                {
-                    map.board[pac.y][pac.x] = ' ';
-                    pac.y += 1;
-                    pac.rddown = true;
-                }
+                pac.smer = PressedDirection.down;
                 return true;
             }
             if (keyData == Keys.Left)
             {
-                if (!pac.rdleft && pac.isFree(map, pac.y, pac.x - 1))  // rd = redraw
-                {
-                    map.board[pac.y][pac.x] = ' ';
-                    pac.x -= 1;
-                    pac.rdleft = true;
-                }
+                pac.smer = PressedDirection.left;
                 return true;
             }
             if (keyData == Keys.Right)
             {
-                if (!pac.rdright && pac.isFree(map, pac.y, pac.x + 1))  // rd = redraw
-                {
-                    map.board[pac.y][pac.x] = ' ';
-                    pac.x += 1;
-                    pac.rdright = true;
-                }
+                pac.smer = PressedDirection.right;
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);

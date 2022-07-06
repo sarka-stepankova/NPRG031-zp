@@ -100,7 +100,7 @@
             // 
             // mainTimer
             // 
-            this.mainTimer.Interval = 50;
+            this.mainTimer.Interval = 150;
             this.mainTimer.Tick += new System.EventHandler(this.mainTimer_Tick);
             // 
             // GameForm

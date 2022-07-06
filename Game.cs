@@ -18,11 +18,8 @@ namespace PacMan
         public int y;
         public int rectHeight = 17;
         public int rectWidth = 17;
-        public bool rdup = false;
-        public bool rddown = false;
-        public bool rdleft = false;
-        public bool rdright = false;
-        //public PressedDirection smer = PressedDirection.left;
+        // potrebuju smer
+        public PressedDirection smer = PressedDirection.no;
         public Pacman(int x, int y)
         {
             this.x = x;
@@ -30,7 +27,6 @@ namespace PacMan
         }
         // + smer a mapa?
 
-        // MUZU ZASE POUZIT
         public void redrawPacman(Graphics g)
         {
             g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
