@@ -48,18 +48,123 @@ namespace PacMan
 
         Map map;
         Graphics g;
+        Pacman pac;
         private void playGame2_Click(object sender, EventArgs e)
         {
-            pacMan.Hide();
-            playGame2.Hide();
-            pictureBox2.Hide();
-            g = CreateGraphics();
-            map = new Map("board.txt", g);
+            pacMan.Visible = false;
+            playGame2.Visible = false;
+            pictureBox2.Visible = false;
+            pictureBox1.Visible = false;
+            Quit.Visible = false;
+
+            map = new Map("board.txt");
+            pac = new Pacman(9, 16);
+
+            mainTimer.Enabled = true;
         }
 
         private void Quit_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        private void mainTimer_Tick(object sender, EventArgs e)
+        {
+            // updatovat - vykreslit board, + vykreslit Pacmana, (+ vykreslit Duchy)
+            pac.rdup = false;
+            pac.rddown = false;
+            pac.rdleft = false;
+            pac.rdright = false;
+
+            // TADY PREKRESLOVAT PACMANA
+            //pac.redrawPacman(g);
+
+            //switch (map.stav)
+            //{
+            //    case Stav.bezi:
+            //        map.PohniVsemiPrvky(stisknutaSipka);
+            //        map.VykresliSe(g, ClientSize.Width, ClientSize.Height);
+            //        break;
+            //    case Stav.vyhra:
+            //        mainTimer.Enabled = false;
+            //        MessageBox.Show("Game Win!");
+            //        break;
+            //    case Stav.prohra:
+            //        mainTimer.Enabled = false;
+            //        MessageBox.Show("Game Over!");
+            //        break;
+            //    default:
+            //        break;
+            //}
+            this.Refresh();
+        }
+
+        //PressedDirection stisknutaSipka = PressedDirection.no;
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            
+            if (keyData == Keys.Up)
+            {
+                if (!pac.rdup && pac.isFree(map, pac.y-1, pac.x))  // rd = redraw
+                {
+                    map.board[pac.y][pac.x] = ' ';
+                    map.board[pac.y - 1][pac.x] = 'P';
+                    pac.y -= 1;
+                    pac.rdup = true;
+                }
+                return true;
+            }
+            if (keyData == Keys.Down)
+            {
+                if (!pac.rddown && pac.isFree(map, pac.y + 1, pac.x))  // rd = redraw
+                {
+                    map.board[pac.y][pac.x] = ' ';
+                    map.board[pac.y + 1][pac.x] = 'P';
+                    pac.y += 1;
+                    pac.rddown = true;
+                }
+                return true;
+            }
+            if (keyData == Keys.Left)
+            {
+                if (!pac.rdleft && pac.isFree(map, pac.y, pac.x - 1))  // rd = redraw
+                {
+                    map.board[pac.y][pac.x] = ' ';
+                    map.board[pac.y][pac.x - 1] = 'P';
+                    pac.x -= 1;
+                    pac.rdleft = true;
+                }
+                return true;
+            }
+            if (keyData == Keys.Right)
+            {
+                if (!pac.rdright && pac.isFree(map, pac.y, pac.x + 1))  // rd = redraw
+                {
+                    map.board[pac.y][pac.x] = ' ';
+                    map.board[pac.y][pac.x + 1] = 'P';
+                    pac.x += 1;
+                    pac.rdright = true;
+                }
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void GameForm_Paint(object sender, PaintEventArgs e)
+        {
+            if (!mainTimer.Enabled)
+            {
+                return;
+            }
+            e.Graphics.Clear(Color.Black);
+            map.redrawMap(map.board, e.Graphics);
+            
+        }
+
+        //private void Form1_KeyUp(object sender, KeyEventArgs e)
+        //{
+        //    stisknutaSipka = PressedDirection.no;
+        //}
     }
 }

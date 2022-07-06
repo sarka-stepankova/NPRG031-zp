@@ -11,23 +11,59 @@ namespace PacMan
 {
     enum PressedDirection { no, left, up, right, down };
     public enum State { notStarted, running, win, loss };
+
+    class Pacman
+    {
+        public int x;
+        public int y;
+        public int rectHeight = 17;
+        public int rectWidth = 17;
+        public bool rdup = false;
+        public bool rddown = false;
+        public bool rdleft = false;
+        public bool rdright = false;
+        public Pacman(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+        // + smer a mapa?
+
+        // MUZU ZASE POUZIT
+        //public void redrawPacman(Graphics g)
+        //{
+        //    g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+        //}
+
+        // je volno? ... tam kam chci jit
+        public bool isFree(Map map, int a, int b)
+        {
+            if (map.board[a][b] != 'B')
+            {
+                return true;
+            }
+            return false;
+        }
+    }
     internal class Map
     {
-        private List<List<char>> board;
+        public List<List<char>> board;
         int widthCount = 19;
         int heightCount = 22;
-        int rectHeight = 17;
-        int rectWidth = 17;
+        public int rectHeight = 17;
+        public int rectWidth = 17;
 
         public State state = State.notStarted;
 
-        public Map(string file, Graphics g)
+        private Bitmap brick = Properties.Resources.brick;
+
+        public Map(string file)
         {
             board = loadMap(file);
-            createMap(board, g);
+            //redrawMap(board, g);
         }
  
-        public List<List<char>> loadMap(string path)
+        List<List<char>> loadMap(string path)
         {
             List<List<char>> charMap = new List<List<char>>();
             string text = File.ReadAllText(path);  //"board.txt"
@@ -53,34 +89,34 @@ namespace PacMan
             return charMap;
         }
 
-        void createMap(List<List<char>> mapFromFile, Graphics g)
+        public void redrawMap(List<List<char>> updatedMap, Graphics g)  // tady se nemeni pacman, ale jenom mizi coins, ty ted neresim
         {
             for (int y = 0; y < heightCount; y++)
             {
                 for (int x = 0; x < widthCount; x++)
                 {
-                    char c = mapFromFile[y][x];
+                    char c = updatedMap[y][x];
                     switch (c)
                     {
                         case 'B':
-                            //PictureBox p = new PictureBox
-                            //{
-                            //    Name = "brick",
-                            //    Size = new Size(rectWidth, rectHeight),
-                            //    Location = new Point(x * rectWidth, y * rectHeight),
-                            //    Image = Properties.Resources.brick,
-                            //};
-                            //this.Controls.Add(p);
-                            g.DrawImage(Properties.Resources.brick, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.FillRectangle(Brushes.DarkGray, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            //g.DrawImage(brick, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
-                        case ' ':
-                            g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                        case 'C':
+                            g.FillEllipse(Brushes.Yellow, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            //g.FillRectangle(Brushes.Green, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            //g.DrawImage(Properties.Resources.coin, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case 'T':
+                            g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            //g.DrawImage(Properties.Resources.token, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case 'P':
                             g.DrawImage(Properties.Resources._1sx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         default:
-                            g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            //g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                     }
                 }

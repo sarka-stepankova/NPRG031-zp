@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.playGame2 = new System.Windows.Forms.PictureBox();
             this.Quit = new System.Windows.Forms.PictureBox();
             this.pacMan = new System.Windows.Forms.PictureBox();
+            this.mainTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playGame2)).BeginInit();
@@ -96,6 +98,11 @@
             this.pacMan.TabIndex = 0;
             this.pacMan.TabStop = false;
             // 
+            // mainTimer
+            // 
+            this.mainTimer.Interval = 50;
+            this.mainTimer.Tick += new System.EventHandler(this.mainTimer_Tick);
+            // 
             // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -107,8 +114,10 @@
             this.Controls.Add(this.playGame2);
             this.Controls.Add(this.Quit);
             this.Controls.Add(this.pacMan);
+            this.DoubleBuffered = true;
             this.Name = "GameForm";
             this.Text = "PacMan";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameForm_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.playGame2)).EndInit();
@@ -125,6 +134,7 @@
         private System.Windows.Forms.PictureBox playGame2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Timer mainTimer;
     }
 }
 
