@@ -22,6 +22,7 @@ namespace PacMan
         public bool rddown = false;
         public bool rdleft = false;
         public bool rdright = false;
+        //public PressedDirection smer = PressedDirection.left;
         public Pacman(int x, int y)
         {
             this.x = x;
@@ -30,10 +31,10 @@ namespace PacMan
         // + smer a mapa?
 
         // MUZU ZASE POUZIT
-        //public void redrawPacman(Graphics g)
-        //{
-        //    g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
-        //}
+        public void redrawPacman(Graphics g)
+        {
+            g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+        }
 
         // je volno? ... tam kam chci jit
         public bool isFree(Map map, int a, int b)
@@ -54,8 +55,6 @@ namespace PacMan
         public int rectWidth = 17;
 
         public State state = State.notStarted;
-
-        private Bitmap brick = Properties.Resources.brick;
 
         public Map(string file)
         {
@@ -103,7 +102,7 @@ namespace PacMan
                             //g.DrawImage(brick, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case 'C':
-                            g.FillEllipse(Brushes.Yellow, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.FillEllipse(Brushes.Yellow, x * rectWidth + 4, y * rectHeight + 4, rectWidth - 10, rectHeight - 10);
                             //g.FillRectangle(Brushes.Green, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             //g.DrawImage(Properties.Resources.coin, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
@@ -111,9 +110,9 @@ namespace PacMan
                             g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             //g.DrawImage(Properties.Resources.token, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
-                        case 'P':
-                            g.DrawImage(Properties.Resources._1sx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            break;
+                        //case 'P':
+                        //    g.DrawImage(Properties.Resources._1sx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                        //    break;
                         default:
                             g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             //g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);

@@ -70,32 +70,17 @@ namespace PacMan
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            // updatovat - vykreslit board, + vykreslit Pacmana, (+ vykreslit Duchy)
             pac.rdup = false;
             pac.rddown = false;
             pac.rdleft = false;
             pac.rdright = false;
 
-            // TADY PREKRESLOVAT PACMANA
-            //pac.redrawPacman(g);
+            // na timer posunout ducha ve smeru ve kterym zrovna bylo zmacknuty tlacitko
+            // proste posouvat ducha na smer
+
 
             //switch (map.stav)
-            //{
-            //    case Stav.bezi:
-            //        map.PohniVsemiPrvky(stisknutaSipka);
-            //        map.VykresliSe(g, ClientSize.Width, ClientSize.Height);
-            //        break;
-            //    case Stav.vyhra:
-            //        mainTimer.Enabled = false;
-            //        MessageBox.Show("Game Win!");
-            //        break;
-            //    case Stav.prohra:
-            //        mainTimer.Enabled = false;
-            //        MessageBox.Show("Game Over!");
-            //        break;
-            //    default:
-            //        break;
-            //}
+            
             this.Refresh();
         }
 
@@ -109,7 +94,7 @@ namespace PacMan
                 if (!pac.rdup && pac.isFree(map, pac.y-1, pac.x))  // rd = redraw
                 {
                     map.board[pac.y][pac.x] = ' ';
-                    map.board[pac.y - 1][pac.x] = 'P';
+                    //map.board[pac.y - 1][pac.x] = 'P';
                     pac.y -= 1;
                     pac.rdup = true;
                 }
@@ -120,7 +105,6 @@ namespace PacMan
                 if (!pac.rddown && pac.isFree(map, pac.y + 1, pac.x))  // rd = redraw
                 {
                     map.board[pac.y][pac.x] = ' ';
-                    map.board[pac.y + 1][pac.x] = 'P';
                     pac.y += 1;
                     pac.rddown = true;
                 }
@@ -131,7 +115,6 @@ namespace PacMan
                 if (!pac.rdleft && pac.isFree(map, pac.y, pac.x - 1))  // rd = redraw
                 {
                     map.board[pac.y][pac.x] = ' ';
-                    map.board[pac.y][pac.x - 1] = 'P';
                     pac.x -= 1;
                     pac.rdleft = true;
                 }
@@ -142,7 +125,6 @@ namespace PacMan
                 if (!pac.rdright && pac.isFree(map, pac.y, pac.x + 1))  // rd = redraw
                 {
                     map.board[pac.y][pac.x] = ' ';
-                    map.board[pac.y][pac.x + 1] = 'P';
                     pac.x += 1;
                     pac.rdright = true;
                 }
@@ -159,7 +141,7 @@ namespace PacMan
             }
             e.Graphics.Clear(Color.Black);
             map.redrawMap(map.board, e.Graphics);
-            
+            pac.redrawPacman(e.Graphics);
         }
 
         //private void Form1_KeyUp(object sender, KeyEventArgs e)
