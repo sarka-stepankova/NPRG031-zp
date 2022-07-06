@@ -1,6 +1,6 @@
 ﻿namespace PacMan
 {
-    partial class Menu
+    partial class GameForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Menu));
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.playGame2 = new System.Windows.Forms.PictureBox();
@@ -53,10 +52,10 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(195, 519);
+            this.pictureBox1.Image = global::PacMan.Properties.Resources.mup1;
+            this.pictureBox1.Location = new System.Drawing.Point(195, 540);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(28, 28);
+            this.pictureBox1.Size = new System.Drawing.Size(20, 20);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
@@ -77,7 +76,7 @@
             // Quit
             // 
             this.Quit.Image = global::PacMan.Properties.Resources.exit;
-            this.Quit.Location = new System.Drawing.Point(146, 465);
+            this.Quit.Location = new System.Drawing.Point(146, 490);
             this.Quit.Name = "Quit";
             this.Quit.Size = new System.Drawing.Size(92, 33);
             this.Quit.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -97,7 +96,7 @@
             this.pacMan.TabIndex = 0;
             this.pacMan.TabStop = false;
             // 
-            // Menu
+            // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -108,7 +107,7 @@
             this.Controls.Add(this.playGame2);
             this.Controls.Add(this.Quit);
             this.Controls.Add(this.pacMan);
-            this.Name = "Menu";
+            this.Name = "GameForm";
             this.Text = "PacMan";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

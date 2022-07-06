@@ -1,28 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
 namespace PacMan
 {
-    public class Board
+    enum PressedDirection { no, left, up, right, down };
+    public enum State { notStarted, running, win, loss };
+    internal class Map
     {
+        private List<List<char>> board;
+        int widthCount = 19;
+        int heightCount = 22;
+        int rectHeight = 17;
+        int rectWidth = 17;
 
-    }
-    public partial class Game : Form
-    {
-        public Game()
+        public State state = State.notStarted;
+
+        public Map(string file, Graphics g)
         {
-            InitializeComponent();
-            // vytvor mapu
+            board = loadMap(file);
+            createMap(board, g);
         }
-
+ 
         public List<List<char>> loadMap(string path)
         {
             List<List<char>> charMap = new List<List<char>>();
@@ -49,20 +53,8 @@ namespace PacMan
             return charMap;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        void createMap(List<List<char>> mapFromFile, Graphics g)
         {
-            //this.Close();
-            // nacti mapu();
-            List<List<char>> mapFromFile = loadMap("board.txt");
-            createMap(mapFromFile);
-        }
-
-        void createMap(List<List<char>> mapFromFile)
-        {
-            int rectHeight = 17;
-            int rectWidth = 17;
-            int widthCount = 19;
-            int heightCount = 22;
             for (int y = 0; y < heightCount; y++)
             {
                 for (int x = 0; x < widthCount; x++)
@@ -71,45 +63,24 @@ namespace PacMan
                     switch (c)
                     {
                         case 'B':
-                            PictureBox p = new PictureBox
-                            {
-                                Name = "brick",
-                                Size = new Size(rectWidth, rectHeight),
-                                Location = new Point(x * rectWidth, y * rectHeight),
-                                Image = Properties.Resources.brick,
-                            };
-                            this.Controls.Add(p);
+                            //PictureBox p = new PictureBox
+                            //{
+                            //    Name = "brick",
+                            //    Size = new Size(rectWidth, rectHeight),
+                            //    Location = new Point(x * rectWidth, y * rectHeight),
+                            //    Image = Properties.Resources.brick,
+                            //};
+                            //this.Controls.Add(p);
+                            g.DrawImage(Properties.Resources.brick, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case ' ':
-                            PictureBox q = new PictureBox
-                            {
-                                Name = "empty",
-                                Size = new Size(rectWidth, rectHeight),
-                                Location = new Point(x * rectWidth, y * rectHeight),
-                                Image = Properties.Resources.empty,
-                            };
-                            this.Controls.Add(q);
+                            g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case 'P':
-                            PictureBox r = new PictureBox
-                            {
-                                Name = "pacman",
-                                Size = new Size(rectWidth, rectHeight),
-                                Location = new Point(x * rectWidth, y * rectHeight),
-                                Image = Properties.Resources.pacdx,
-                                SizeMode = PictureBoxSizeMode.StretchImage,
-                            };
-                            this.Controls.Add(r);
+                            g.DrawImage(Properties.Resources._1sx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         default:
-                            PictureBox s = new PictureBox
-                            {
-                                Name = "brick",
-                                Size = new Size(rectWidth, rectHeight),
-                                Location = new Point(x * rectWidth, y * rectHeight),
-                                Image = Properties.Resources.brick,
-                            };
-                            this.Controls.Add(s);
+                            g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                     }
                 }

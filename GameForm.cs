@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace PacMan
 {
-    public partial class Menu : Form
+    public partial class GameForm : Form
     {
-        public Menu()
+        public GameForm()
         {
             InitializeComponent();
             Quit.Width = 92;
@@ -45,12 +46,15 @@ namespace PacMan
             playGame2.Height = 33;
         }
 
+        Map map;
+        Graphics g;
         private void playGame2_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            Game g = new Game();
-            g.ShowDialog();
-            this.Show();
+            pacMan.Hide();
+            playGame2.Hide();
+            pictureBox2.Hide();
+            g = CreateGraphics();
+            map = new Map("board.txt", g);
         }
 
         private void Quit_Click(object sender, EventArgs e)
