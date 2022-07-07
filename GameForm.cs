@@ -62,12 +62,15 @@ namespace PacMan
             firstLife.Visible = true;
             secondLife.Visible = true;
             thirdLife.Visible = true;
+            scoreBox.Visible = true;
+            scorePicture.Visible = true;
             numOfLifes = 3;
 
             map = new Map("board.txt");
             pac = new Pacman(9, 16, map);
             b = new Blinky(9, 8, PressedDirection.no, rnd);
             docasnySmer = PressedDirection.no;
+            scoreBox.Text = pac.score.ToString();
 
             mainTimer.Enabled = true;
         }
@@ -95,6 +98,9 @@ namespace PacMan
             b.moveGhost(pac);
 
             pac.movePacman(docasnySmer);
+            // je na tom miste v mape 'C'?
+            scoreBox.Text = pac.score.ToString();
+
             // kdyz stoupne Pacman na T, zmeni se mod na frightened
             if (pac.map.board[pac.y][pac.x] == 'T')
             {
@@ -102,8 +108,6 @@ namespace PacMan
                 b.counter = 0;
             }
 
-            // prohra - obcas se pac a ghost vymeni - hlidat asi u ducha i u pacmana
-            // if (onTheSamePlace(pac, b) || switchedPlaces(pac, b, ))
             if (onTheSamePlace(pac, b) || switchedPlaces(pac, b, prevpX, prevpY, prevbX, prevbY))
             {
                 numOfLifes -= 1;
@@ -187,6 +191,5 @@ namespace PacMan
             // pak neco jako redraw duchy
             b.redrawBlinky(e.Graphics);
         }
-
     }
 }

@@ -20,6 +20,7 @@ namespace PacMan
         public Map map;
         public int rectHeight = 17;
         public int rectWidth = 17;
+        public int score = 0;
         public PressedDirection smer = PressedDirection.no;
         public Pacman(int x, int y, Map map)
         {
@@ -74,48 +75,56 @@ namespace PacMan
 
             else if (this.isFree(this.y - 1, this.x) && docasnySmer == PressedDirection.up)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y -= 1;
                 this.smer = PressedDirection.up;
             }
             else if (this.isFree(this.y + 1, this.x) && docasnySmer == PressedDirection.down)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y += 1;
                 this.smer = PressedDirection.down;
             }
             else if (this.isFree(this.y, this.x - 1) && docasnySmer == PressedDirection.left)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x -= 1;
                 this.smer = PressedDirection.left;
             }
             else if (this.isFree(this.y, this.x + 1) && docasnySmer == PressedDirection.right)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x += 1;
                 this.smer = PressedDirection.right;
             }
             else if (this.isFree(this.y - 1, this.x) && this.smer == PressedDirection.up)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y -= 1;
             }
             else if (this.isFree(this.y + 1, this.x) && this.smer == PressedDirection.down)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y += 1;
             }
             else if (this.isFree(this.y, this.x - 1) && this.smer == PressedDirection.left)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x -= 1;
             }
             else if (this.isFree(this.y, this.x + 1) && this.smer == PressedDirection.right)
             {
+                if (map.board[y][x] == 'C') { score += 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x += 1;
-            }
+            }   
         }
     }
 
@@ -150,7 +159,13 @@ namespace PacMan
                     g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                     break;
                 case GhostState.frightened:
-                    g.DrawImage(Properties.Resources.crazy, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    if (counter == 49 || counter == 47 || counter == 45 || counter == 43)
+                    {
+                        g.DrawImage(Properties.Resources.tempo, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    } else
+                    {
+                        g.DrawImage(Properties.Resources.crazy, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    }
                     break;
                 case GhostState.eaten:
                     g.DrawImage(Properties.Resources.msx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);

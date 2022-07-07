@@ -150,5 +150,11 @@
   <ItemGroup>
     <None Include="Resources\msx.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tempo.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\score.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

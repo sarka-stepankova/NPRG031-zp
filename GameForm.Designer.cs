@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.mainTimer = new System.Windows.Forms.Timer(this.components);
+            this.scoreBox = new System.Windows.Forms.TextBox();
+            this.scorePicture = new System.Windows.Forms.PictureBox();
             this.thirdLife = new System.Windows.Forms.PictureBox();
             this.secondLife = new System.Windows.Forms.PictureBox();
             this.firstLife = new System.Windows.Forms.PictureBox();
@@ -38,6 +40,7 @@
             this.playGame2 = new System.Windows.Forms.PictureBox();
             this.Quit = new System.Windows.Forms.PictureBox();
             this.pacMan = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.scorePicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.thirdLife)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.secondLife)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.firstLife)).BeginInit();
@@ -52,6 +55,29 @@
             // 
             this.mainTimer.Interval = 150;
             this.mainTimer.Tick += new System.EventHandler(this.mainTimer_Tick);
+            // 
+            // scoreBox
+            // 
+            this.scoreBox.BackColor = System.Drawing.Color.Black;
+            this.scoreBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.scoreBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreBox.ForeColor = System.Drawing.Color.White;
+            this.scoreBox.Location = new System.Drawing.Point(125, 475);
+            this.scoreBox.Name = "scoreBox";
+            this.scoreBox.Size = new System.Drawing.Size(165, 38);
+            this.scoreBox.TabIndex = 9;
+            this.scoreBox.Visible = false;
+            // 
+            // scorePicture
+            // 
+            this.scorePicture.Image = global::PacMan.Properties.Resources.score;
+            this.scorePicture.Location = new System.Drawing.Point(28, 478);
+            this.scorePicture.Name = "scorePicture";
+            this.scorePicture.Size = new System.Drawing.Size(79, 33);
+            this.scorePicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.scorePicture.TabIndex = 10;
+            this.scorePicture.TabStop = false;
+            this.scorePicture.Visible = false;
             // 
             // thirdLife
             // 
@@ -148,6 +174,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(432, 603);
+            this.Controls.Add(this.scorePicture);
+            this.Controls.Add(this.scoreBox);
             this.Controls.Add(this.thirdLife);
             this.Controls.Add(this.secondLife);
             this.Controls.Add(this.firstLife);
@@ -160,6 +188,7 @@
             this.Name = "GameForm";
             this.Text = "PacMan";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameForm_Paint);
+            ((System.ComponentModel.ISupportInitialize)(this.scorePicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.thirdLife)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.secondLife)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.firstLife)).EndInit();
@@ -169,6 +198,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Quit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pacMan)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -183,6 +213,8 @@
         private System.Windows.Forms.PictureBox firstLife;
         private System.Windows.Forms.PictureBox secondLife;
         private System.Windows.Forms.PictureBox thirdLife;
+        private System.Windows.Forms.TextBox scoreBox;
+        private System.Windows.Forms.PictureBox scorePicture;
     }
 }
 
