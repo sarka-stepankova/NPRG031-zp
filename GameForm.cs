@@ -48,6 +48,7 @@ namespace PacMan
 
         Map map;
         Pacman pac;
+        Blinky b;
         PressedDirection docasnySmer = PressedDirection.no;
         private void playGame2_Click(object sender, EventArgs e)
         {
@@ -58,7 +59,8 @@ namespace PacMan
             Quit.Visible = false;
 
             map = new Map("board.txt");
-            pac = new Pacman(9, 16);
+            pac = new Pacman(9, 16, map);
+            b = new Blinky(9, 8, PressedDirection.left);
 
             mainTimer.Enabled = true;
         }
@@ -70,58 +72,37 @@ namespace PacMan
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            // proste posouvat ducha na smer
-            // duch ma nejaky smer a je zmacknute nejake tlacitko, kdyz muze jit tam 
-            // kde je zmacknuty tlacitko, tak tam jde a ziska novy smer, jinak jde ve svem smeru
-            if (pac.isFree(map, pac.y - 1, pac.x) && pac.smer == PressedDirection.up)
-            {
-                map.board[pac.y][pac.x] = ' ';
-                pac.y -= 1;
-            }
-            if (pac.isFree(map, pac.y + 1, pac.x) && pac.smer == PressedDirection.down) 
-            {
-                map.board[pac.y][pac.x] = ' ';
-                pac.y += 1;
-            }
-            if (pac.isFree(map, pac.y, pac.x - 1) && pac.smer == PressedDirection.left)
-            {
-                map.board[pac.y][pac.x] = ' ';
-                pac.x -= 1;
-            }
-            if (pac.isFree(map, pac.y, pac.x + 1) && pac.smer == PressedDirection.right)  
-            {
-                map.board[pac.y][pac.x] = ' ';
-                pac.x += 1;
-            }
+            // pak neco jako pohni duchy for each ghost v duchove
+            b.moveGhost(pac);
+            pac.movePacman(docasnySmer);
 
             //switch (map.stav)
 
             this.Refresh();
         }
 
-        //PressedDirection stisknutaSipka = PressedDirection.no;
-
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             
             if (keyData == Keys.Up)
             {
-                pac.smer = PressedDirection.up;
+                //pac.smer = PressedDirection.up;
+                docasnySmer = PressedDirection.up;
                 return true;
             }
             if (keyData == Keys.Down)
             {
-                pac.smer = PressedDirection.down;
+                docasnySmer = PressedDirection.down;
                 return true;
             }
             if (keyData == Keys.Left)
             {
-                pac.smer = PressedDirection.left;
+                docasnySmer = PressedDirection.left;
                 return true;
             }
             if (keyData == Keys.Right)
             {
-                pac.smer = PressedDirection.right;
+                docasnySmer = PressedDirection.right;
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -134,13 +115,12 @@ namespace PacMan
                 return;
             }
             e.Graphics.Clear(Color.Black);
-            map.redrawMap(map.board, e.Graphics);
+            pac.map.redrawMap(pac.map.board, e.Graphics);
             pac.redrawPacman(e.Graphics);
+
+            // pak neco jako redraw duchy
+            b.redrawBlinky(e.Graphics);
         }
 
-        //private void Form1_KeyUp(object sender, KeyEventArgs e)
-        //{
-        //    stisknutaSipka = PressedDirection.no;
-        //}
     }
 }

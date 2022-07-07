@@ -29,18 +29,23 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.mainTimer = new System.Windows.Forms.Timer(this.components);
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.playGame2 = new System.Windows.Forms.PictureBox();
             this.Quit = new System.Windows.Forms.PictureBox();
             this.pacMan = new System.Windows.Forms.PictureBox();
-            this.mainTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playGame2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Quit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pacMan)).BeginInit();
             this.SuspendLayout();
+            // 
+            // mainTimer
+            // 
+            this.mainTimer.Interval = 150;
+            this.mainTimer.Tick += new System.EventHandler(this.mainTimer_Tick);
             // 
             // pictureBox2
             // 
@@ -54,7 +59,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::PacMan.Properties.Resources.mup1;
+            this.pictureBox1.Image = global::PacMan.Properties.Resources._1up;
             this.pictureBox1.Location = new System.Drawing.Point(195, 540);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(20, 20);
@@ -97,11 +102,6 @@
             this.pacMan.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pacMan.TabIndex = 0;
             this.pacMan.TabStop = false;
-            // 
-            // mainTimer
-            // 
-            this.mainTimer.Interval = 150;
-            this.mainTimer.Tick += new System.EventHandler(this.mainTimer_Tick);
             // 
             // GameForm
             // 

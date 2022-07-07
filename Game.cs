@@ -16,24 +16,41 @@ namespace PacMan
     {
         public int x;
         public int y;
+        public Map map;
         public int rectHeight = 17;
         public int rectWidth = 17;
-        // potrebuju smer
         public PressedDirection smer = PressedDirection.no;
-        public Pacman(int x, int y)
+        public Pacman(int x, int y, Map map)
         {
             this.x = x;
             this.y = y;
+            this.map = map;
         }
-        // + smer a mapa?
 
         public void redrawPacman(Graphics g)
         {
-            g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+            switch (smer)
+            {
+                case PressedDirection.left:
+                    g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+                    break;
+                case PressedDirection.right:
+                    g.DrawImage(Properties.Resources._1dx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+                    break;
+                case PressedDirection.up:
+                    g.DrawImage(Properties.Resources._1up, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+                    break;
+                case PressedDirection.down:
+                    g.DrawImage(Properties.Resources._1down, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+                    break;
+                default:
+                    g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+                    break;
+            }
+
         }
 
-        // je volno? ... tam kam chci jit
-        public bool isFree(Map map, int a, int b)
+        bool isFree(int a, int b)
         {
             if (map.board[a][b] != 'B')
             {
@@ -41,7 +58,166 @@ namespace PacMan
             }
             return false;
         }
+
+        public void movePacman(PressedDirection docasnySmer)
+        {
+            // TODO: smer doprava plne nefunguje
+            if (this.x == 18 && this.y == 10 && this.smer == PressedDirection.right)
+            {
+                this.x = 1;
+            }
+            else if (this.x == 0 && this.y == 10 && this.smer == PressedDirection.left)
+            {
+                this.x = 18;
+            }
+
+            else if (this.isFree(this.y - 1, this.x) && docasnySmer == PressedDirection.up)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.y -= 1;
+                this.smer = PressedDirection.up;
+            }
+            else if (this.isFree(this.y + 1, this.x) && docasnySmer == PressedDirection.down)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.y += 1;
+                this.smer = PressedDirection.down;
+            }
+            else if (this.isFree(this.y, this.x - 1) && docasnySmer == PressedDirection.left)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.x -= 1;
+                this.smer = PressedDirection.left;
+            }
+            else if (this.isFree(this.y, this.x + 1) && docasnySmer == PressedDirection.right)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.x += 1;
+                this.smer = PressedDirection.right;
+            }
+            else if (this.isFree(this.y - 1, this.x) && this.smer == PressedDirection.up)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.y -= 1;
+            }
+            else if (this.isFree(this.y + 1, this.x) && this.smer == PressedDirection.down)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.y += 1;
+            }
+            else if (this.isFree(this.y, this.x - 1) && this.smer == PressedDirection.left)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.x -= 1;
+            }
+            else if (this.isFree(this.y, this.x + 1) && this.smer == PressedDirection.right)
+            {
+                this.map.board[this.y][this.x] = ' ';
+                this.x += 1;
+            }
+        }
     }
+
+    // Duch - pozice, barva (if pinky target = ...,)
+    class Blinky  // red ghost, target is pacman
+    {
+        public int x;
+        public int y;
+        public PressedDirection dir;
+
+        public Blinky (int x, int y, PressedDirection dir)
+        {
+            this.x = x;  // x=9 x y=8
+            this.y = y;
+            this.dir = dir;
+        }
+
+        public void redrawBlinky(Graphics g)
+        {
+            int rectHeight = 17;
+            int rectWidth = 17; 
+            // podle state
+            g.DrawImage(Properties.Resources.rsx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+        }
+
+        bool isFree(int a, int b, Pacman pac)
+        {
+            if (pac.map.board[a][b] != 'B')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        double distanceBetween2(int x, int y, int targetX, int targetY)
+        {
+            double a = Math.Abs(x - targetX);
+            double b = Math.Abs(y - targetY);
+            return Math.Sqrt(a * a + b * b);
+        }
+
+        public void moveGhost(Pacman pac)
+        {
+            // najit kde je pacman = target
+            // vypocitej target podle state of Ghost
+            int targetX = pac.x;
+            int targetY = pac.y;
+            double distance = double.PositiveInfinity;
+            PressedDirection docdir = PressedDirection.up;
+
+            // TODO: kdyz je blinky na hrane tunelu, tak prepadnout na druhou stranu
+            if (x == 18 && y == 10 && dir == PressedDirection.right)
+            {
+                x = 0;
+                return;
+            }
+            if (x == 0 && y == 10 && dir == PressedDirection.left)
+            {
+                x = 18;
+                return;
+            }
+            if ((dir != PressedDirection.down) && isFree(y-1,x, pac))  //nahoru
+            {
+                distance = distanceBetween2(x, y - 1, targetX, targetY);
+                docdir = PressedDirection.up;
+                //this.y = y - 1;
+            }
+            if ((dir != PressedDirection.right) && isFree(y, x-1, pac))  //doleva
+            {
+                double tempDistance = distanceBetween2(x-1, y, targetX, targetY);
+                if (tempDistance <= distance)
+                {
+                    distance = tempDistance;
+                    docdir = PressedDirection.left;
+                }
+            }
+            if ((dir != PressedDirection.up) && isFree(y+1, x, pac))  //dolu
+            {
+                double tempDistance = distanceBetween2(x, y+1, targetX, targetY);
+                if (tempDistance <= distance)
+                {
+                    distance = tempDistance;
+                    docdir = PressedDirection.down;
+                }
+            }
+            if ((dir != PressedDirection.left) && isFree(y, x+1, pac))  //doprava
+            {
+                double tempDistance = distanceBetween2(x+1,y, targetX, targetY);
+                if (tempDistance <= distance)
+                {
+                    distance = tempDistance;
+                    docdir = PressedDirection.right;
+                }
+            }
+
+            if (docdir == PressedDirection.up && dir !=PressedDirection.down) { this.y = y - 1; dir = PressedDirection.up; }
+            else if (docdir == PressedDirection.left && dir != PressedDirection.right) { this.x -= 1; dir = PressedDirection.left; }
+            else if (docdir == PressedDirection.down && dir != PressedDirection.up) { this.y += 1; dir = PressedDirection.down; }
+            else if (docdir == PressedDirection.right && dir != PressedDirection.left) { this.x += 1; dir = PressedDirection.right; }
+
+        }
+    }
+
     internal class Map
     {
         public List<List<char>> board;
@@ -55,7 +231,6 @@ namespace PacMan
         public Map(string file)
         {
             board = loadMap(file);
-            //redrawMap(board, g);
         }
  
         List<List<char>> loadMap(string path)
