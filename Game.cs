@@ -11,6 +11,7 @@ namespace PacMan
 {
     enum PressedDirection { no, left, up, right, down };
     public enum State { notStarted, running, win, loss };
+    public enum GhostState { chase, scatter, frightened, eaten }
 
     class Pacman
     {
@@ -124,12 +125,18 @@ namespace PacMan
         public int x;
         public int y;
         public PressedDirection dir;
+        public GhostState state = GhostState.chase; //ale pak scatter
+        public int counter = 0;
+        Random rnd;
+        int targetX;
+        int targetY;
 
-        public Blinky (int x, int y, PressedDirection dir)
+        public Blinky (int x, int y, PressedDirection dir, Random rnd)
         {
             this.x = x;  // x=9 x y=8
             this.y = y;
             this.dir = dir;
+            this.rnd = rnd;
         }
 
         public void redrawBlinky(Graphics g)
@@ -137,7 +144,21 @@ namespace PacMan
             int rectHeight = 17;
             int rectWidth = 17; 
             // podle state
-            g.DrawImage(Properties.Resources.rsx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
+            switch (state)
+            {
+                case GhostState.chase:
+                    g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    break;
+                case GhostState.frightened:
+                    g.DrawImage(Properties.Resources.crazy, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    break;
+                case GhostState.eaten:
+                    g.DrawImage(Properties.Resources.msx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    break;
+                default:
+                    g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    break;
+            }
         }
 
         bool isFree(int a, int b, Pacman pac)
@@ -156,16 +177,29 @@ namespace PacMan
             return Math.Sqrt(a * a + b * b);
         }
 
+        void findTargetByState(Pacman pac)
+        {
+            targetX = pac.x;
+            targetY = pac.y;
+            if (state == GhostState.frightened)
+            {
+                targetX = rnd.Next(19);
+                targetY = rnd.Next(22);
+            }
+        }
         public void moveGhost(Pacman pac)
         {
-            // najit kde je pacman = target
-            // vypocitej target podle state of Ghost
-            int targetX = pac.x;
-            int targetY = pac.y;
+            if (pac.smer == PressedDirection.no) { return; }
+            if (state == GhostState.frightened) { counter += 1; }
+            if (counter == 50) { state = GhostState.chase; counter = 0; }
+            if (counter == 1) { turnAround(); return; } // return;
+
+            findTargetByState(pac);
+
             double distance = double.PositiveInfinity;
             PressedDirection docdir = PressedDirection.up;
 
-            // TODO: kdyz je blinky na hrane tunelu, tak prepadnout na druhou stranu
+            // go through tunnel
             if (x == 18 && y == 10 && dir == PressedDirection.right)
             {
                 x = 0;
@@ -176,6 +210,8 @@ namespace PacMan
                 x = 18;
                 return;
             }
+
+            // check the directions and compute distance between ghost move and target
             if ((dir != PressedDirection.down) && isFree(y-1,x, pac))  //nahoru
             {
                 distance = distanceBetween2(x, y - 1, targetX, targetY);
@@ -215,6 +251,27 @@ namespace PacMan
             else if (docdir == PressedDirection.down && dir != PressedDirection.up) { this.y += 1; dir = PressedDirection.down; }
             else if (docdir == PressedDirection.right && dir != PressedDirection.left) { this.x += 1; dir = PressedDirection.right; }
 
+        }
+
+        public void turnAround()
+        {
+            switch (dir)
+            {
+                case PressedDirection.left:
+                    dir = PressedDirection.right;
+                    break;
+                case PressedDirection.up:
+                    dir = PressedDirection.down;
+                    break;
+                case PressedDirection.right:
+                    dir = PressedDirection.left;
+                    break;
+                case PressedDirection.down:
+                    dir = PressedDirection.up;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -278,7 +335,7 @@ namespace PacMan
                             //g.DrawImage(Properties.Resources.coin, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case 'T':
-                            g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.FillEllipse(Brushes.Orange, x * rectWidth + 2, y * rectHeight + 2, rectWidth - 7, rectHeight - 7);
                             //g.DrawImage(Properties.Resources.token, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         //case 'P':

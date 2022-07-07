@@ -13,6 +13,7 @@ namespace PacMan
 {
     public partial class GameForm : Form
     {
+        Random rnd = new Random();
         public GameForm()
         {
             InitializeComponent();
@@ -50,6 +51,7 @@ namespace PacMan
         Pacman pac;
         Blinky b;
         PressedDirection docasnySmer = PressedDirection.no;
+        int numOfLifes;
         private void playGame2_Click(object sender, EventArgs e)
         {
             pacMan.Visible = false;
@@ -57,10 +59,15 @@ namespace PacMan
             pictureBox2.Visible = false;
             pictureBox1.Visible = false;
             Quit.Visible = false;
+            firstLife.Visible = true;
+            secondLife.Visible = true;
+            thirdLife.Visible = true;
+            numOfLifes = 3;
 
             map = new Map("board.txt");
             pac = new Pacman(9, 16, map);
-            b = new Blinky(9, 8, PressedDirection.left);
+            b = new Blinky(9, 8, PressedDirection.no, rnd);
+            docasnySmer = PressedDirection.no;
 
             mainTimer.Enabled = true;
         }
@@ -70,11 +77,70 @@ namespace PacMan
             this.Close();
         }
 
+        private bool onTheSamePlace(Pacman pac, Blinky b)
+        {
+            return ( pac.x == b.x && pac.y == b.y );
+        }
+
+        private bool switchedPlaces(Pacman pac, Blinky b, int prevpX, int prevpY, int prevbX, int prevbY)
+        {
+            return (b.x == prevpX && b.y == prevpY && pac.x == prevbX && pac.y == prevbY);
+        }
+
         private void mainTimer_Tick(object sender, EventArgs e)
         {
             // pak neco jako pohni duchy for each ghost v duchove
+            int prevpX = pac.x; int prevpY = pac.y;
+            int prevbX = b.x; int prevbY = b.y;
             b.moveGhost(pac);
+
             pac.movePacman(docasnySmer);
+            // kdyz stoupne Pacman na T, zmeni se mod na frightened
+            if (pac.map.board[pac.y][pac.x] == 'T')
+            {
+                b.state = GhostState.frightened;
+                b.counter = 0;
+            }
+
+            // prohra - obcas se pac a ghost vymeni - hlidat asi u ducha i u pacmana
+            // if (onTheSamePlace(pac, b) || switchedPlaces(pac, b, ))
+            if (onTheSamePlace(pac, b) || switchedPlaces(pac, b, prevpX, prevpY, prevbX, prevbY))
+            {
+                numOfLifes -= 1;
+                if (numOfLifes == 2) {
+                    this.Refresh();
+                    thirdLife.Visible = false;
+                    pac.x = 9; pac.y = 16; pac.smer = PressedDirection.no;
+                    b.x = 9; b.y = 8;
+                    docasnySmer = PressedDirection.no;
+                    mainTimer.Enabled = false;
+                    MessageBox.Show("You lost 1 life");
+                    mainTimer.Enabled = true;
+                }
+                if (numOfLifes == 1) { 
+                    secondLife.Visible = false;
+                    pac.x = 9; pac.y = 16; pac.smer = PressedDirection.no;
+                    b.x = 9; b.y = 8;
+                    docasnySmer = PressedDirection.no;
+                    mainTimer.Enabled = false;
+                    MessageBox.Show("You lost 1 life");
+                    mainTimer.Enabled = true;
+                }
+                if (numOfLifes <= 0)
+                {
+                    this.Refresh();
+                    firstLife.Visible = false;
+                    mainTimer.Enabled = false;
+                    /*MessageBox.Show("Prohra!");*/
+                    DialogResult dialogResult = MessageBox.Show("You lose! Play again?", "Pacman", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes) {
+                        playGame2_Click(sender, e);
+                    } else if (dialogResult == DialogResult.No)
+                    {
+                        this.Close();
+                    }
+                }
+            }
 
             //switch (map.stav)
 

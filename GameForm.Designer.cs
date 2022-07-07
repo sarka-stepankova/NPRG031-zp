@@ -30,11 +30,17 @@
         {
             this.components = new System.ComponentModel.Container();
             this.mainTimer = new System.Windows.Forms.Timer(this.components);
+            this.thirdLife = new System.Windows.Forms.PictureBox();
+            this.secondLife = new System.Windows.Forms.PictureBox();
+            this.firstLife = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.playGame2 = new System.Windows.Forms.PictureBox();
             this.Quit = new System.Windows.Forms.PictureBox();
             this.pacMan = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.thirdLife)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.secondLife)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.firstLife)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playGame2)).BeginInit();
@@ -46,6 +52,39 @@
             // 
             this.mainTimer.Interval = 150;
             this.mainTimer.Tick += new System.EventHandler(this.mainTimer_Tick);
+            // 
+            // thirdLife
+            // 
+            this.thirdLife.Image = global::PacMan.Properties.Resources._1sx;
+            this.thirdLife.Location = new System.Drawing.Point(365, 473);
+            this.thirdLife.Name = "thirdLife";
+            this.thirdLife.Size = new System.Drawing.Size(20, 20);
+            this.thirdLife.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.thirdLife.TabIndex = 8;
+            this.thirdLife.TabStop = false;
+            this.thirdLife.Visible = false;
+            // 
+            // secondLife
+            // 
+            this.secondLife.Image = global::PacMan.Properties.Resources._1sx;
+            this.secondLife.Location = new System.Drawing.Point(339, 473);
+            this.secondLife.Name = "secondLife";
+            this.secondLife.Size = new System.Drawing.Size(20, 20);
+            this.secondLife.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.secondLife.TabIndex = 7;
+            this.secondLife.TabStop = false;
+            this.secondLife.Visible = false;
+            // 
+            // firstLife
+            // 
+            this.firstLife.Image = global::PacMan.Properties.Resources._1sx;
+            this.firstLife.Location = new System.Drawing.Point(313, 473);
+            this.firstLife.Name = "firstLife";
+            this.firstLife.Size = new System.Drawing.Size(20, 20);
+            this.firstLife.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.firstLife.TabIndex = 6;
+            this.firstLife.TabStop = false;
+            this.firstLife.Visible = false;
             // 
             // pictureBox2
             // 
@@ -59,7 +98,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::PacMan.Properties.Resources._1up;
+            this.pictureBox1.Image = global::PacMan.Properties.Resources.rsx;
             this.pictureBox1.Location = new System.Drawing.Point(195, 540);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(20, 20);
@@ -109,6 +148,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(432, 603);
+            this.Controls.Add(this.thirdLife);
+            this.Controls.Add(this.secondLife);
+            this.Controls.Add(this.firstLife);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.playGame2);
@@ -118,6 +160,9 @@
             this.Name = "GameForm";
             this.Text = "PacMan";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameForm_Paint);
+            ((System.ComponentModel.ISupportInitialize)(this.thirdLife)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.secondLife)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.firstLife)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.playGame2)).EndInit();
@@ -135,6 +180,9 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Timer mainTimer;
+        private System.Windows.Forms.PictureBox firstLife;
+        private System.Windows.Forms.PictureBox secondLife;
+        private System.Windows.Forms.PictureBox thirdLife;
     }
 }
 
