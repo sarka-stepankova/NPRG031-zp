@@ -156,5 +156,26 @@
   <ItemGroup>
     <None Include="Resources\score.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mdown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mdx.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\msx1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mup1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rdown.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rdx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rdx2.gif" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

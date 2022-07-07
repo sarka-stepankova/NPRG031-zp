@@ -156,7 +156,24 @@ namespace PacMan
             switch (state)
             {
                 case GhostState.chase:
-                    g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    switch (dir)
+                    {
+                        case PressedDirection.left:
+                            g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case PressedDirection.right:
+                            g.DrawImage(Properties.Resources.rdx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);  
+                            break;
+                        case PressedDirection.down:
+                            g.DrawImage(Properties.Resources.rdown, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case PressedDirection.up:
+                            g.DrawImage(Properties.Resources.rdx2, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        default:
+                            g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                    }
                     break;
                 case GhostState.frightened:
                     if (counter == 49 || counter == 47 || counter == 45 || counter == 43)

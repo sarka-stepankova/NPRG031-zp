@@ -92,6 +92,9 @@ namespace PacMan
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
+            // kdyz score 150, tak prepni stav (asi u packmana) na stav.win a pak tady podle toho s tim operuj
+            // jinak u stavu bezi budou podstavy pro duchy
+
             // pak neco jako pohni duchy for each ghost v duchove
             int prevpX = pac.x; int prevpY = pac.y;
             int prevbX = b.x; int prevbY = b.y;
@@ -101,7 +104,6 @@ namespace PacMan
             // je na tom miste v mape 'C'?
             scoreBox.Text = pac.score.ToString();
 
-            // kdyz stoupne Pacman na T, zmeni se mod na frightened
             if (pac.map.board[pac.y][pac.x] == 'T')
             {
                 b.state = GhostState.frightened;
@@ -156,7 +158,6 @@ namespace PacMan
             
             if (keyData == Keys.Up)
             {
-                //pac.smer = PressedDirection.up;
                 docasnySmer = PressedDirection.up;
                 return true;
             }
