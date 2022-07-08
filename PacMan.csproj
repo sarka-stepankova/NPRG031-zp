@@ -177,5 +177,17 @@
   <ItemGroup>
     <None Include="Resources\rdx2.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vdown.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vdx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vsx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vup.gif" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
