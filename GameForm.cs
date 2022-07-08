@@ -103,6 +103,23 @@ namespace PacMan
             pac.movePacman(docasnySmer);
             // je na tom miste v mape 'C'?
             scoreBox.Text = pac.score.ToString();
+            if (pac.coins == 0)
+            {
+                mainTimer.Enabled = false;
+                thirdLife.Visible = false;
+                scoreBox.Visible = false;
+                scorePicture.Visible = false;
+                //MessageBox.Show("You win!");
+                DialogResult dialogResult = MessageBox.Show("You win! Play again?", "Pacman", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    playGame2_Click(sender, e);
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    this.Close();
+                }
+            }
 
             if (pac.map.board[pac.y][pac.x] == 'T')
             {
@@ -115,7 +132,7 @@ namespace PacMan
                 numOfLifes -= 1;
                 if (numOfLifes == 2) {
                     this.Refresh();
-                    thirdLife.Visible = false;
+                    firstLife.Visible = false;
                     pac.x = 9; pac.y = 16; pac.smer = PressedDirection.no;
                     b.x = 9; b.y = 8;
                     docasnySmer = PressedDirection.no;
@@ -135,7 +152,9 @@ namespace PacMan
                 if (numOfLifes <= 0)
                 {
                     this.Refresh();
-                    firstLife.Visible = false;
+                    thirdLife.Visible = false;
+                    scoreBox.Visible = false;
+                    scorePicture.Visible = false;
                     mainTimer.Enabled = false;
                     /*MessageBox.Show("Prohra!");*/
                     DialogResult dialogResult = MessageBox.Show("You lose! Play again?", "Pacman", MessageBoxButtons.YesNo);

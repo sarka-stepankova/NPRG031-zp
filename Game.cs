@@ -21,6 +21,7 @@ namespace PacMan
         public int rectHeight = 17;
         public int rectWidth = 17;
         public int score = 0;
+        public int coins = 150;
         public PressedDirection smer = PressedDirection.no;
         public Pacman(int x, int y, Map map)
         {
@@ -75,53 +76,53 @@ namespace PacMan
 
             else if (this.isFree(this.y - 1, this.x) && docasnySmer == PressedDirection.up)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y -= 1;
                 this.smer = PressedDirection.up;
             }
             else if (this.isFree(this.y + 1, this.x) && docasnySmer == PressedDirection.down)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y += 1;
                 this.smer = PressedDirection.down;
             }
             else if (this.isFree(this.y, this.x - 1) && docasnySmer == PressedDirection.left)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x -= 1;
                 this.smer = PressedDirection.left;
             }
             else if (this.isFree(this.y, this.x + 1) && docasnySmer == PressedDirection.right)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x += 1;
                 this.smer = PressedDirection.right;
             }
             else if (this.isFree(this.y - 1, this.x) && this.smer == PressedDirection.up)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y -= 1;
             }
             else if (this.isFree(this.y + 1, this.x) && this.smer == PressedDirection.down)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y += 1;
             }
             else if (this.isFree(this.y, this.x - 1) && this.smer == PressedDirection.left)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x -= 1;
             }
             else if (this.isFree(this.y, this.x + 1) && this.smer == PressedDirection.right)
             {
-                if (map.board[y][x] == 'C') { score += 1; }
+                if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x += 1;
             }   
@@ -156,6 +157,7 @@ namespace PacMan
             switch (state)
             {
                 case GhostState.chase:
+                    // determine eyes direction and draw
                     switch (dir)
                     {
                         case PressedDirection.left:
