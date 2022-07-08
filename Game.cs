@@ -9,9 +9,9 @@ using System.IO;
 
 namespace PacMan
 {
-    enum PressedDirection { no, left, up, right, down };
+    enum Direction { no, left, up, right, down };
     public enum State { notStarted, running, win, loss };
-    public enum GhostState { chase, scatter, frightened, eaten }
+    public enum GhostState { chase, frightened, eaten }
 
     class Pacman
     {
@@ -22,7 +22,8 @@ namespace PacMan
         public int rectWidth = 17;
         public int score = 0;
         public int coins = 150;
-        public PressedDirection smer = PressedDirection.no;
+        public Direction direction = Direction.no;
+        // state of the game? ... running, win, lose
         public Pacman(int x, int y, Map map)
         {
             this.x = x;
@@ -32,18 +33,18 @@ namespace PacMan
 
         public void redrawPacman(Graphics g)
         {
-            switch (smer)
+            switch (direction)
             {
-                case PressedDirection.left:
+                case Direction.left:
                     g.DrawImage(Properties.Resources._1sx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
                     break;
-                case PressedDirection.right:
+                case Direction.right:
                     g.DrawImage(Properties.Resources._1dx, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
                     break;
-                case PressedDirection.up:
+                case Direction.up:
                     g.DrawImage(Properties.Resources._1up, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
                     break;
-                case PressedDirection.down:
+                case Direction.down:
                     g.DrawImage(Properties.Resources._1down, this.x * rectWidth, this.y * rectHeight, rectWidth, rectHeight);
                     break;
                 default:
@@ -53,6 +54,7 @@ namespace PacMan
 
         }
 
+        // Pro pacmana, kdyz potrebuje zjistit, jestli je na policku, na ktere chce jit, volno
         bool isFree(int a, int b)
         {
             if (map.board[a][b] != 'B')
@@ -62,65 +64,69 @@ namespace PacMan
             return false;
         }
 
-        public void movePacman(PressedDirection docasnySmer)
+        // Zjisti, kde je volno a kam muze pacman jit a pak ho tam presune
+        public void movePacman(Direction tempDir)
         {
-            // TODO: smer doprava plne nefunguje
-            if (this.x == 18 && this.y == 10 && this.smer == PressedDirection.right)
+            // go through tunnel
+            if (this.x == 18 && this.y == 10 && this.direction == Direction.right)
             {
                 this.x = 1;
             }
-            else if (this.x == 0 && this.y == 10 && this.smer == PressedDirection.left)
+            else if (this.x == 0 && this.y == 10 && this.direction == Direction.left)
             {
                 this.x = 18;
             }
 
-            else if (this.isFree(this.y - 1, this.x) && docasnySmer == PressedDirection.up)
+            // Prvne se pacman podiva na to, jestli nebyl zmacknuty jiny smer, kam by mohl jit
+            else if (this.isFree(this.y - 1, this.x) && tempDir == Direction.up)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y -= 1;
-                this.smer = PressedDirection.up;
+                this.direction = Direction.up;
             }
-            else if (this.isFree(this.y + 1, this.x) && docasnySmer == PressedDirection.down)
+            else if (this.isFree(this.y + 1, this.x) && tempDir == Direction.down)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y += 1;
-                this.smer = PressedDirection.down;
+                this.direction = Direction.down;
             }
-            else if (this.isFree(this.y, this.x - 1) && docasnySmer == PressedDirection.left)
+            else if (this.isFree(this.y, this.x - 1) && tempDir == Direction.left)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x -= 1;
-                this.smer = PressedDirection.left;
+                this.direction = Direction.left;
             }
-            else if (this.isFree(this.y, this.x + 1) && docasnySmer == PressedDirection.right)
+            else if (this.isFree(this.y, this.x + 1) && tempDir == Direction.right)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x += 1;
-                this.smer = PressedDirection.right;
+                this.direction = Direction.right;
             }
-            else if (this.isFree(this.y - 1, this.x) && this.smer == PressedDirection.up)
+
+            // jinak pokracuje smerem ktery uz ma (popr. zataci, kdyz uz nemuze dal svym smerem) 
+            else if (this.isFree(this.y - 1, this.x) && this.direction == Direction.up)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y -= 1;
             }
-            else if (this.isFree(this.y + 1, this.x) && this.smer == PressedDirection.down)
+            else if (this.isFree(this.y + 1, this.x) && this.direction == Direction.down)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.y += 1;
             }
-            else if (this.isFree(this.y, this.x - 1) && this.smer == PressedDirection.left)
+            else if (this.isFree(this.y, this.x - 1) && this.direction == Direction.left)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
                 this.x -= 1;
             }
-            else if (this.isFree(this.y, this.x + 1) && this.smer == PressedDirection.right)
+            else if (this.isFree(this.y, this.x + 1) && this.direction == Direction.right)
             {
                 if (map.board[y][x] == 'C') { score += 1; coins -= 1; }
                 this.map.board[this.y][this.x] = ' ';
@@ -129,47 +135,46 @@ namespace PacMan
         }
     }
 
-    // Duch - pozice, barva (if pinky target = ...,)
-    class Blinky  // red ghost, target is pacman
+    class Ghost
     {
         public int x;
         public int y;
-        public PressedDirection dir;
-        public GhostState state = GhostState.chase; //ale pak scatter
+        public Direction dir;
+        public GhostState state = GhostState.chase;
         public int counter = 0;
         Random rnd;
         int targetX;
         int targetY;
 
-        public Blinky (int x, int y, PressedDirection dir, Random rnd)
+        public Ghost (int x, int y, Direction dir, Random rnd)
         {
-            this.x = x;  // x=9 x y=8
+            this.x = x;
             this.y = y;
             this.dir = dir;
             this.rnd = rnd;
         }
 
-        public void redrawBlinky(Graphics g)
+        // pak abstraktni
+        public void redrawGhost(Graphics g)
         {
             int rectHeight = 17;
             int rectWidth = 17; 
-            // podle state
             switch (state)
             {
                 case GhostState.chase:
-                    // determine eyes direction and draw
+                    // determine eyes (direction) and draw ghost with them
                     switch (dir)
                     {
-                        case PressedDirection.left:
+                        case Direction.left:
                             g.DrawImage(Properties.Resources.rsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
-                        case PressedDirection.right:
+                        case Direction.right:
                             g.DrawImage(Properties.Resources.rdx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);  
                             break;
-                        case PressedDirection.down:
+                        case Direction.down:
                             g.DrawImage(Properties.Resources.rdown, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
-                        case PressedDirection.up:
+                        case Direction.up:
                             g.DrawImage(Properties.Resources.rdx2, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         default:
@@ -204,7 +209,7 @@ namespace PacMan
             return false;
         }
 
-        double distanceBetween2(int x, int y, int targetX, int targetY)
+        double findDistanceBetween2(int x, int y, int targetX, int targetY)
         {
             double a = Math.Abs(x - targetX);
             double b = Math.Abs(y - targetY);
@@ -219,71 +224,77 @@ namespace PacMan
             {
                 targetX = rnd.Next(19);
                 targetY = rnd.Next(22);
+            } 
+            if (state == GhostState.eaten)
+            {
+                targetX = 9;
+                targetY = 8;
             }
+            // pro pinky - kdyz jde pacman nahoru, tak 4 nahoru a 4 doleva
         }
         public void moveGhost(Pacman pac)
         {
-            if (pac.smer == PressedDirection.no) { return; }
+            if (pac.direction == Direction.no) { return; }
             if (state == GhostState.frightened) { counter += 1; }
             if (counter == 50) { state = GhostState.chase; counter = 0; }
-            if (counter == 1) { turnAround(); return; } // return;
 
             findTargetByState(pac);
 
             double distance = double.PositiveInfinity;
-            PressedDirection docdir = PressedDirection.up;
+            Direction docdir = Direction.up;
 
             // go through tunnel
-            if (x == 18 && y == 10 && dir == PressedDirection.right)
+            if (x == 18 && y == 10 && dir == Direction.right)
             {
                 x = 0;
                 return;
             }
-            if (x == 0 && y == 10 && dir == PressedDirection.left)
+            if (x == 0 && y == 10 && dir == Direction.left)
             {
                 x = 18;
                 return;
             }
 
-            // check the directions and compute distance between ghost move and target
-            if ((dir != PressedDirection.down) && isFree(y-1,x, pac))  //nahoru
+            // check the directions and find the closest distance
+            // between target and possible moves
+            if ((dir != Direction.down) && isFree(y-1,x, pac))  //up
             {
-                distance = distanceBetween2(x, y - 1, targetX, targetY);
-                docdir = PressedDirection.up;
+                distance = findDistanceBetween2(x, y - 1, targetX, targetY);
+                docdir = Direction.up;
                 //this.y = y - 1;
             }
-            if ((dir != PressedDirection.right) && isFree(y, x-1, pac))  //doleva
+            if ((dir != Direction.right) && isFree(y, x-1, pac))  //left
             {
-                double tempDistance = distanceBetween2(x-1, y, targetX, targetY);
+                double tempDistance = findDistanceBetween2(x-1, y, targetX, targetY);
                 if (tempDistance <= distance)
                 {
                     distance = tempDistance;
-                    docdir = PressedDirection.left;
+                    docdir = Direction.left;
                 }
             }
-            if ((dir != PressedDirection.up) && isFree(y+1, x, pac))  //dolu
+            if ((dir != Direction.up) && isFree(y+1, x, pac))  //down
             {
-                double tempDistance = distanceBetween2(x, y+1, targetX, targetY);
+                double tempDistance = findDistanceBetween2(x, y+1, targetX, targetY);
                 if (tempDistance <= distance)
                 {
                     distance = tempDistance;
-                    docdir = PressedDirection.down;
+                    docdir = Direction.down;
                 }
             }
-            if ((dir != PressedDirection.left) && isFree(y, x+1, pac))  //doprava
+            if ((dir != Direction.left) && isFree(y, x+1, pac))  //right
             {
-                double tempDistance = distanceBetween2(x+1,y, targetX, targetY);
+                double tempDistance = findDistanceBetween2(x+1,y, targetX, targetY);
                 if (tempDistance <= distance)
                 {
                     distance = tempDistance;
-                    docdir = PressedDirection.right;
+                    docdir = Direction.right;
                 }
             }
 
-            if (docdir == PressedDirection.up && dir !=PressedDirection.down) { this.y = y - 1; dir = PressedDirection.up; }
-            else if (docdir == PressedDirection.left && dir != PressedDirection.right) { this.x -= 1; dir = PressedDirection.left; }
-            else if (docdir == PressedDirection.down && dir != PressedDirection.up) { this.y += 1; dir = PressedDirection.down; }
-            else if (docdir == PressedDirection.right && dir != PressedDirection.left) { this.x += 1; dir = PressedDirection.right; }
+            if (docdir == Direction.up && dir !=Direction.down) { this.y = y - 1; dir = Direction.up; }
+            else if (docdir == Direction.left && dir != Direction.right) { this.x -= 1; dir = Direction.left; }
+            else if (docdir == Direction.down && dir != Direction.up) { this.y += 1; dir = Direction.down; }
+            else if (docdir == Direction.right && dir != Direction.left) { this.x += 1; dir = Direction.right; }
 
         }
 
@@ -291,19 +302,20 @@ namespace PacMan
         {
             switch (dir)
             {
-                case PressedDirection.left:
-                    dir = PressedDirection.right;
+                case Direction.left:
+                    dir = Direction.right;
                     break;
-                case PressedDirection.up:
-                    dir = PressedDirection.down;
+                case Direction.up:
+                    dir = Direction.down;
                     break;
-                case PressedDirection.right:
-                    dir = PressedDirection.left;
+                case Direction.right:
+                    dir = Direction.left;
                     break;
-                case PressedDirection.down:
-                    dir = PressedDirection.up;
+                case Direction.down:
+                    dir = Direction.up;
                     break;
                 default:
+                    dir = Direction.left;
                     break;
             }
         }

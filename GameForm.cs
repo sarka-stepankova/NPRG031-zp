@@ -49,8 +49,8 @@ namespace PacMan
 
         Map map;
         Pacman pac;
-        Blinky b;
-        PressedDirection docasnySmer = PressedDirection.no;
+        Ghost blinky;
+        Direction tempDir = Direction.no;
         int numOfLifes;
         private void playGame2_Click(object sender, EventArgs e)
         {
@@ -68,8 +68,8 @@ namespace PacMan
 
             map = new Map("board.txt");
             pac = new Pacman(9, 16, map);
-            b = new Blinky(9, 8, PressedDirection.no, rnd);
-            docasnySmer = PressedDirection.no;
+            blinky = new Ghost(9, 8, Direction.no, rnd);
+            tempDir = Direction.no;
             scoreBox.Text = pac.score.ToString();
 
             mainTimer.Enabled = true;
@@ -80,36 +80,34 @@ namespace PacMan
             this.Close();
         }
 
-        private bool onTheSamePlace(Pacman pac, Blinky b)
+        private bool onTheSamePlace(Pacman pac, Ghost b)
         {
             return ( pac.x == b.x && pac.y == b.y );
         }
 
-        private bool switchedPlaces(Pacman pac, Blinky b, int prevpX, int prevpY, int prevbX, int prevbY)
+        private bool switchedPlaces(Pacman pac, Ghost b, int prevpX, int prevpY, int prevbX, int prevbY)
         {
             return (b.x == prevpX && b.y == prevpY && pac.x == prevbX && pac.y == prevbY);
         }
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            // kdyz score 150, tak prepni stav (asi u packmana) na stav.win a pak tady podle toho s tim operuj
+            // kdyz score 150, tak prepni stav (asi u packmana pac.map) na stav.win a pak tady podle toho s tim operuj
             // jinak u stavu bezi budou podstavy pro duchy
-
             // pak neco jako pohni duchy for each ghost v duchove
-            int prevpX = pac.x; int prevpY = pac.y;
-            int prevbX = b.x; int prevbY = b.y;
-            b.moveGhost(pac);
 
-            pac.movePacman(docasnySmer);
-            // je na tom miste v mape 'C'?
+            int prevpX = pac.x; int prevpY = pac.y;
+
+            // pro vsechny duchy
+            int prevbX = blinky.x; int prevbY = blinky.y;
+            blinky.moveGhost(pac);
+
+            pac.movePacman(tempDir);
             scoreBox.Text = pac.score.ToString();
             if (pac.coins == 0)
             {
                 mainTimer.Enabled = false;
                 thirdLife.Visible = false;
-                scoreBox.Visible = false;
-                scorePicture.Visible = false;
-                //MessageBox.Show("You win!");
                 DialogResult dialogResult = MessageBox.Show("You win! Play again?", "Pacman", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
@@ -121,50 +119,68 @@ namespace PacMan
                 }
             }
 
+            // for each ghost
             if (pac.map.board[pac.y][pac.x] == 'T')
             {
-                b.state = GhostState.frightened;
-                b.counter = 0;
+                blinky.state = GhostState.frightened;
+                blinky.counter = 0;
+                blinky.turnAround();
             }
 
-            if (onTheSamePlace(pac, b) || switchedPlaces(pac, b, prevpX, prevpY, prevbX, prevbY))
+            // for each ghost do this
+            if (onTheSamePlace(pac, blinky) || switchedPlaces(pac, blinky, prevpX, prevpY, prevbX, prevbY))
             {
-                numOfLifes -= 1;
-                if (numOfLifes == 2) {
-                    this.Refresh();
-                    firstLife.Visible = false;
-                    pac.x = 9; pac.y = 16; pac.smer = PressedDirection.no;
-                    b.x = 9; b.y = 8;
-                    docasnySmer = PressedDirection.no;
-                    mainTimer.Enabled = false;
-                    MessageBox.Show("You lost 1 life");
-                    mainTimer.Enabled = true;
-                }
-                if (numOfLifes == 1) { 
-                    secondLife.Visible = false;
-                    pac.x = 9; pac.y = 16; pac.smer = PressedDirection.no;
-                    b.x = 9; b.y = 8;
-                    docasnySmer = PressedDirection.no;
-                    mainTimer.Enabled = false;
-                    MessageBox.Show("You lost 1 life");
-                    mainTimer.Enabled = true;
-                }
-                if (numOfLifes <= 0)
+                if (blinky.state == GhostState.chase)
                 {
-                    this.Refresh();
-                    thirdLife.Visible = false;
-                    scoreBox.Visible = false;
-                    scorePicture.Visible = false;
-                    mainTimer.Enabled = false;
-                    /*MessageBox.Show("Prohra!");*/
-                    DialogResult dialogResult = MessageBox.Show("You lose! Play again?", "Pacman", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes) {
-                        playGame2_Click(sender, e);
-                    } else if (dialogResult == DialogResult.No)
+                    numOfLifes -= 1;
+                    if (numOfLifes == 2)
                     {
-                        this.Close();
+                        this.Refresh();
+                        firstLife.Visible = false;
+                        pac.x = 9; pac.y = 16; pac.direction = Direction.no;
+                        blinky.x = 9; blinky.y = 8;
+                        tempDir = Direction.no;
+                        mainTimer.Enabled = false;
+                        MessageBox.Show("You lost 1 life");
+                        mainTimer.Enabled = true;
+                    }
+                    if (numOfLifes == 1)
+                    {
+                        secondLife.Visible = false;
+                        pac.x = 9; pac.y = 16; pac.direction = Direction.no;
+                        blinky.x = 9; blinky.y = 8;
+                        tempDir = Direction.no;
+                        mainTimer.Enabled = false;
+                        MessageBox.Show("You lost 1 life");
+                        mainTimer.Enabled = true;
+                    }
+                    if (numOfLifes <= 0)
+                    {
+                        thirdLife.Visible = false;
+                        this.Refresh();
+                        mainTimer.Enabled = false;
+                        DialogResult dialogResult = MessageBox.Show("You lose! Play again?", "Pacman", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            playGame2_Click(sender, e);
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            this.Close();
+                        }
                     }
                 }
+                else if (blinky.state == GhostState.frightened)
+                {
+                    blinky.state = GhostState.eaten;
+                    pac.score += 10;
+                }
+            }
+
+            // for each ghost too
+            if (blinky.state == GhostState.eaten && blinky.x == 9 && blinky.y == 8)
+            {
+                blinky.state = GhostState.chase;
             }
 
             //switch (map.stav)
@@ -177,22 +193,22 @@ namespace PacMan
             
             if (keyData == Keys.Up)
             {
-                docasnySmer = PressedDirection.up;
+                tempDir = Direction.up;
                 return true;
             }
             if (keyData == Keys.Down)
             {
-                docasnySmer = PressedDirection.down;
+                tempDir = Direction.down;
                 return true;
             }
             if (keyData == Keys.Left)
             {
-                docasnySmer = PressedDirection.left;
+                tempDir = Direction.left;
                 return true;
             }
             if (keyData == Keys.Right)
             {
-                docasnySmer = PressedDirection.right;
+                tempDir = Direction.right;
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -209,7 +225,7 @@ namespace PacMan
             pac.redrawPacman(e.Graphics);
 
             // pak neco jako redraw duchy
-            b.redrawBlinky(e.Graphics);
+            blinky.redrawGhost(e.Graphics);
         }
     }
 }
