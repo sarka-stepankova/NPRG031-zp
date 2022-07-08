@@ -189,5 +189,29 @@
   <ItemGroup>
     <None Include="Resources\vup.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\adown.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\adx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\asx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\aup1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gdown.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gdx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gsx.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gup.gif" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

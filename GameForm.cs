@@ -51,6 +51,8 @@ namespace PacMan
         Pacman pac;
         Blinky blinky;
         Pinky pinky;
+        Inky inky;
+        Clyde clyde;
         List<Ghost> ghosts;
         Direction tempDir = Direction.no;
         int numOfLifes;
@@ -70,11 +72,12 @@ namespace PacMan
 
             map = new Map("board.txt");
             pac = new Pacman(9, 16, map);
-            blinky = new Blinky(9, 8, Direction.no, rnd);
-            pinky = new Pinky(8, 10, Direction.no, rnd);
             ghosts = new List<Ghost>();
-            ghosts.Add(blinky);
-            ghosts.Add(pinky);
+            blinky = new Blinky(9, 8, Direction.no, rnd); ghosts.Add(blinky);
+            pinky = new Pinky(8, 10, Direction.no, rnd); ghosts.Add(pinky);
+            inky = new Inky(9, 10, Direction.no, rnd); ghosts.Add(inky);
+            clyde = new Clyde(10, 10, Direction.no, rnd); ghosts.Add(clyde);
+           
             tempDir = Direction.no;
             scoreBox.Text = pac.score.ToString();
 

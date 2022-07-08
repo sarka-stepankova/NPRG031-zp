@@ -148,15 +148,6 @@ namespace PacMan
         public int prevX;
         public int prevY;
 
-        //public Ghost (int x, int y, Direction dir, Random rnd)
-        //{
-        //    this.x = x;
-        //    this.y = y;
-        //    this.dir = dir;
-        //    this.rnd = rnd;
-        //}
-
-        // pak abstraktni
         public abstract void redrawGhost(Graphics g);
 
         bool isFree(int a, int b, Pacman pac)
@@ -168,7 +159,7 @@ namespace PacMan
             return false;
         }
 
-        double findDistanceBetween2(int x, int y, int targetX, int targetY)
+        public double findDistanceBetween2(int x, int y, int targetX, int targetY)
         {
             double a = Math.Abs(x - targetX);
             double b = Math.Abs(y - targetY);
@@ -265,7 +256,8 @@ namespace PacMan
         }
     }
 
-    class Blinky : Ghost
+    // the red one
+    class Blinky : Ghost 
     {
         public Blinky(int x, int y, Direction dir, Random rnd)
         {
@@ -339,6 +331,7 @@ namespace PacMan
         }
     }
 
+    // the pink one
     class Pinky : Ghost
     {
         public Pinky(int x, int y, Direction dir, Random rnd)
@@ -416,6 +409,11 @@ namespace PacMan
                 targetX = pac.x;
                 targetY = pac.y + 4;
             }
+            if (pac.score < 10)
+            {
+                targetX = 10;
+                targetY = 8;
+            }
 
             if (state == GhostState.frightened)
             {
@@ -427,16 +425,10 @@ namespace PacMan
                 targetX = 9;
                 targetY = 8;
             }
-
-            if (pac.score < 10)
-            {
-                targetX = 10;
-                targetY = 8;
-            }
-            // pro pinky - kdyz jde pacman nahoru, tak 4 nahoru a 4 doleva
         }
     }
 
+    // the cyan one
     class Inky : Ghost
     {
         public Inky(int x, int y, Direction dir, Random rnd)
@@ -458,19 +450,19 @@ namespace PacMan
                     switch (dir)
                     {
                         case Direction.left:
-                            g.DrawImage(Properties.Resources.vsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.DrawImage(Properties.Resources.asx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case Direction.right:
-                            g.DrawImage(Properties.Resources.vdx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.DrawImage(Properties.Resources.adx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case Direction.down:
-                            g.DrawImage(Properties.Resources.vdown, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.DrawImage(Properties.Resources.adown, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         case Direction.up:
-                            g.DrawImage(Properties.Resources.vup, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.DrawImage(Properties.Resources.aup, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                         default:
-                            g.DrawImage(Properties.Resources.vsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            g.DrawImage(Properties.Resources.asx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
                             break;
                     }
                     break;
@@ -498,6 +490,11 @@ namespace PacMan
             targetX = pac.x;
             targetY = pac.y;
             
+            if (findDistanceBetween2(x,y,pac.x,pac.y) < 8)
+            {
+                targetX = rnd.Next(19);
+                targetY = rnd.Next(22);
+            }
 
             if (state == GhostState.frightened)
             {
@@ -515,10 +512,85 @@ namespace PacMan
                 targetX = 10;
                 targetY = 9;
             }
-            // pro pinky - kdyz jde pacman nahoru, tak 4 nahoru a 4 doleva
         }
     }
 
+    // the orange one
+    class Clyde : Ghost
+    {
+        public Clyde(int x, int y, Direction dir, Random rnd)
+        {
+            this.x = x;
+            this.y = y;
+            this.dir = dir;
+            this.rnd = rnd;
+        }
+
+        public override void redrawGhost(Graphics g)
+        {
+            int rectHeight = 17;
+            int rectWidth = 17;
+            switch (state)
+            {
+                case GhostState.chase:
+                    // determine eyes (direction) and draw ghost with them
+                    switch (dir)
+                    {
+                        case Direction.left:
+                            g.DrawImage(Properties.Resources.gsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case Direction.right:
+                            g.DrawImage(Properties.Resources.gdx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case Direction.down:
+                            g.DrawImage(Properties.Resources.gdown, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case Direction.up:
+                            g.DrawImage(Properties.Resources.gup, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        default:
+                            g.DrawImage(Properties.Resources.gsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                    }
+                    break;
+                case GhostState.frightened:
+                    if (counter == 49 || counter == 47 || counter == 45 || counter == 43)
+                    {
+                        g.DrawImage(Properties.Resources.tempo, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    }
+                    else
+                    {
+                        g.DrawImage(Properties.Resources.crazy, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    }
+                    break;
+                case GhostState.eaten:
+                    g.DrawImage(Properties.Resources.msx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    break;
+                default:
+                    g.DrawImage(Properties.Resources.vsx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                    break;
+            }
+        }
+
+        public override void findTargetByState(Pacman pac)
+        {
+            targetX = rnd.Next(19);
+            targetY = rnd.Next(22);
+
+            if (state == GhostState.eaten)
+            {
+                targetX = 9;
+                targetY = 8;
+            }
+
+            if (pac.score < 20)
+            {
+                targetX = 11;
+                targetY = 10;
+            }
+        }
+    }
+    
     internal class Map
     {
         public List<List<char>> board;
