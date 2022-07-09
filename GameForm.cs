@@ -17,6 +17,8 @@ namespace PacMan
         public GameForm()
         {
             InitializeComponent();
+
+            // set size of clickable components
             Quit.Width = 92;
             Quit.Height = 33;
             playGame2.Width = 152;
@@ -55,7 +57,6 @@ namespace PacMan
         Clyde clyde;
         List<Ghost> ghosts;
         Direction tempDir = Direction.no;
-        //int numOfLifes;
 
         private void changeVisibilityAfterLeaveStartScreen()
         {
@@ -82,6 +83,7 @@ namespace PacMan
             pac.map.numOfLives = 3;
             tempDir = Direction.no;
             scoreBox.Text = pac.score.ToString();
+            firstLife.Visible = true; secondLife.Visible = true; thirdLife.Visible = true;
         }
         private void playGame2_Click(object sender, EventArgs e)
         {
@@ -89,7 +91,6 @@ namespace PacMan
             setStartObjectsAndVars();
             mainTimer.Enabled = true;
         }
-
         private void Quit_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -100,6 +101,7 @@ namespace PacMan
             return ( pac.x == g.x && pac.y == g.y );
         }
 
+        // vymenil si Pacman misto s nejakym duchem?
         private bool switchPlaces(Pacman pac, Ghost g, int prevpX, int prevpY, int prevX, int prevY)
         {
             return (g.x == prevpX && g.y == prevpY && pac.x == prevX && pac.y == prevY);
@@ -123,8 +125,90 @@ namespace PacMan
                 }
             }
         }
+        private void switchStateToFrightened()
+        {
+            foreach (Ghost ghost in ghosts)
+            {
+                ghost.state = GhostState.frightened;
+                ghost.counter = 0;
+                ghost.turnAround();
+            }
+        }
+        private void refreshGame()
+        {
+            this.Refresh();
+            if (pac.map.numOfLives == 2) firstLife.Visible = false;
+            if (pac.map.numOfLives == 1) secondLife.Visible = false;
+            pac.x = 9; pac.y = 16; pac.direction = Direction.no;
+            foreach (Ghost g in ghosts)
+            {
+                g.goBackHome();
+            }
+            tempDir = Direction.no;
+            mainTimer.Enabled = false;
+            MessageBox.Show("You lost 1 life");
+            mainTimer.Enabled = true;
+        }
+        private void endGame()
+        {
+            thirdLife.Visible = false;
+            this.Refresh();
+            mainTimer.Enabled = false;
+            DialogResult dialogResult = MessageBox.Show("You lose! Play again?", "Pacman", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                setStartObjectsAndVars();
+                mainTimer.Enabled = true;
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                this.Close();
+            }
+        }
+        private void changeGhostsStates(int prevpX, int prevpY)
+        {
+            foreach (Ghost ghost in ghosts)
+            {
+                // Kdyz se potka Pacman a Duch, bud v jednom stavu na jednom policku, nebo si vymeni mista
+                if (onTheSamePlace(pac, ghost) || switchPlaces(pac, ghost, prevpX, prevpY, ghost.prevX, ghost.prevY))
+                {
+                    if (ghost.state == GhostState.chase)
+                    {
+                        pac.map.numOfLives -= 1;
+                        if (pac.map.numOfLives == 2)
+                        {
+                            refreshGame();
+                        }
+                        else if (pac.map.numOfLives == 1)
+                        {
+                            refreshGame();
+                        }
+                        else if (pac.map.numOfLives <= 0)
+                        {
+                            endGame();
+                        }
+                    }
+                    else if (ghost.state == GhostState.frightened)
+                    {
+                        ghost.state = GhostState.eaten;
+                        // Kdyz sni Pacman ducha, hrac ziska 10 bodu navic
+                        pac.score += 10;
+                    }
+                }
+
+                // Kdyz byl duch snedeny a vrati se k domecku (doprostred kde zacinal cerveny duch), zmeni se jeho stav na chase
+                if (ghost.state == GhostState.eaten && ghost.x == 9 && ghost.y == 8)
+                {
+                    ghost.state = GhostState.chase;
+                }
+            }
+        }
+        
+        // Hlavni kontrola a zmena stavu
         private void mainTimer_Tick(object sender, EventArgs e)
         {
+            // Zapamatuji si predchozi hodnoty, kde byl Pacman a duchove
+            // kvuli hlidani prohozeni si mist (snezeni nekoho nekym)
             int prevpX = pac.x; int prevpY = pac.y;
             foreach (Ghost ghost in ghosts)
             {
@@ -137,96 +221,12 @@ namespace PacMan
             scoreBox.Text = pac.score.ToString();
 
             // kdyz Pacman sesbira vsechny dukaty
-            if (pac.coins == 0)
-            {
-                switchToWinState(sender, e);
-            }
+            if (pac.coins == 0) switchToWinState(sender, e);
 
-            if (pac.map.board[pac.y][pac.x] == 'T')
-            {
-                foreach (Ghost ghost in ghosts)
-                {
-                    ghost.state = GhostState.frightened;
-                    ghost.counter = 0;
-                    ghost.turnAround();
-                }
-            }
+            // kdyz sni Pacman power pellet (token), muze sezrat duchy a ziskat body navic
+            if (pac.map.board[pac.y][pac.x] == 'T') switchStateToFrightened();
 
-            foreach (Ghost ghost in ghosts)
-            {
-                // for each ghost do this
-                if (onTheSamePlace(pac, ghost) || switchPlaces(pac, ghost, prevpX, prevpY, ghost.prevX, ghost.prevY))
-                {
-                    if (ghost.state == GhostState.chase)
-                    {
-                        pac.map.numOfLives -= 1;
-                        if (pac.map.numOfLives == 2)
-                        {  // tady to prepsat na neco jako kdyz duch dostal bool yes, chycen a pak tenhle kod delat az pod foreach
-                            // tady upravuju totiz stav cele hry
-                            // nebo mozna ne, tady upravuju jen mensi stav hry, ale musim vsechny duchy presunout na jejich mista
-                            this.Refresh();
-                            firstLife.Visible = false;
-                            pac.x = 9; pac.y = 16; pac.direction = Direction.no;
-                            //ghost.x = 9; ghost.y = 8; // tady SPATNE !!!
-                            foreach (Ghost g in ghosts)
-                            {
-                                g.goBackHome();
-                            }
-                            tempDir = Direction.no;
-                            mainTimer.Enabled = false;
-                            MessageBox.Show("You lost 1 life");
-                            mainTimer.Enabled = true;
-                        }
-                        else if (pac.map.numOfLives == 1)
-                        {
-                            //tady taky upravuju stav cele hry, taky ne, takze spis presunout vsechny duchy misto jednoho
-                            // nejaka funkce na presunuti vsech duchu
-                            secondLife.Visible = false;
-                            pac.x = 9; pac.y = 16; pac.direction = Direction.no;
-                            //ghost.x = 9; ghost.y = 8;
-                            foreach (Ghost g in ghosts)
-                            {
-                                g.goBackHome();
-                            }
-                            tempDir = Direction.no;
-                            mainTimer.Enabled = false;
-                            MessageBox.Show("You lost 1 life");
-                            mainTimer.Enabled = true;
-                        }
-                        else if (pac.map.numOfLives <= 0)
-                        {
-                            thirdLife.Visible = false;
-                            this.Refresh();
-                            mainTimer.Enabled = false;
-                            DialogResult dialogResult = MessageBox.Show("You lose! Play again?", "Pacman", MessageBoxButtons.YesNo);
-                            if (dialogResult == DialogResult.Yes)
-                            {
-                                setStartObjectsAndVars();
-                                mainTimer.Enabled = true;
-                                //playGame2_Click(sender, e);
-                            }
-                            else if (dialogResult == DialogResult.No)
-                            {
-                                this.Close();
-                            }
-                        }
-                    }
-                    else if (ghost.state == GhostState.frightened)
-                    {
-                        ghost.state = GhostState.eaten;
-                        pac.score += 10;
-                    }
-                }
-
-                // tohle funfuje dobre, separatni pro kazdeho ducha
-                if (ghost.state == GhostState.eaten && ghost.x == 9 && ghost.y == 8)
-                {
-                    ghost.state = GhostState.chase;
-                }
-            }
-            
-
-            //switch (map.stav)
+            changeGhostsStates(prevpX, prevpY);
 
             this.Refresh();
         }
@@ -258,7 +258,7 @@ namespace PacMan
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        // Funkce co prekresluje obrazovku pokazde, kdyz se pohnou pohyblive prvky.
+        // Funkce co prekresluje obrazovku pokazde, kdyz se pohnou pohyblive prvky
         private void GameForm_Paint(object sender, PaintEventArgs e)
         {
             if (!mainTimer.Enabled) { return; }

@@ -124,8 +124,8 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::PacMan.Properties.Resources.gup;
-            this.pictureBox1.Location = new System.Drawing.Point(195, 540);
+            this.pictureBox1.Image = global::PacMan.Properties.Resources.rdx2;
+            this.pictureBox1.Location = new System.Drawing.Point(200, 540);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(20, 20);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;

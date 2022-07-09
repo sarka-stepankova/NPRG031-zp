@@ -12,6 +12,74 @@ namespace PacMan
     enum Direction { no, left, up, right, down };
     public enum State { notStarted, running, win, loss };
     public enum GhostState { chase, frightened, eaten }
+    internal class Map
+    {
+        public List<List<char>> board;
+        int widthCount = 19;
+        int heightCount = 22;
+        public int rectHeight = 17;
+        public int rectWidth = 17;
+        public int numOfLives;
+
+        public State state = State.notStarted;
+
+        public Map(string file)
+        {
+            board = loadMap(file);
+        }
+
+        List<List<char>> loadMap(string path)
+        {
+            List<List<char>> charMap = new List<List<char>>();
+            string text = File.ReadAllText(path);  //"board.txt"
+
+            List<char> list = new List<char>();
+            foreach (char c in text)
+            {
+                if (c != '\n')
+                {
+                    list.Add(c);
+                }
+            }
+
+            for (int i = 0; i < 22; i++)
+            {
+                List<char> newList = new List<char>();
+                for (int j = 0; j < 19; j++)
+                {
+                    newList.Add(list[20 * i + j]);
+                }
+                charMap.Add(newList);
+            }
+            return charMap;
+        }
+
+        public void redrawMap(List<List<char>> updatedMap, Graphics g)
+        {
+            for (int y = 0; y < heightCount; y++)
+            {
+                for (int x = 0; x < widthCount; x++)
+                {
+                    char c = updatedMap[y][x];
+                    switch (c)
+                    {
+                        case 'B':
+                            g.FillRectangle(Brushes.DarkGray, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                        case 'C':
+                            g.FillEllipse(Brushes.Yellow, x * rectWidth + 4, y * rectHeight + 4, rectWidth - 10, rectHeight - 10);
+                            break;
+                        case 'T':
+                            g.FillEllipse(Brushes.Orange, x * rectWidth + 2, y * rectHeight + 2, rectWidth - 7, rectHeight - 7);
+                            break;
+                        default:
+                            g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                            break;
+                    }
+                }
+            }
+        }
+    }
 
     class Pacman
     {
@@ -23,7 +91,6 @@ namespace PacMan
         public int score = 0;
         public int coins = 150;
         public Direction direction = Direction.no;
-        // state of the game? ... running, win, lose
         public Pacman(int x, int y, Map map)
         {
             this.x = x;
@@ -159,6 +226,7 @@ namespace PacMan
             return false;
         }
 
+        // Najdi vzdalenost mezi 2 body na mape (vzdusnou carou)
         public double findDistanceBetween2(int x, int y, int targetX, int targetY)
         {
             double a = Math.Abs(x - targetX);
@@ -167,6 +235,7 @@ namespace PacMan
         }
 
         public abstract void findTargetByState(Pacman pac);
+        
         public void moveGhost(Pacman pac)
         {
             if (pac.direction == Direction.no) { return; }
@@ -196,7 +265,6 @@ namespace PacMan
             {
                 distance = findDistanceBetween2(x, y - 1, targetX, targetY);
                 docdir = Direction.up;
-                //this.y = y - 1;
             }
             if ((dir != Direction.right) && isFree(y, x-1, pac))  //left
             {
@@ -614,83 +682,6 @@ namespace PacMan
         {
             this.x = 10;
             this.y = 10;
-        }
-    }
-    
-    internal class Map
-    {
-        public List<List<char>> board;
-        int widthCount = 19;
-        int heightCount = 22;
-        public int rectHeight = 17;
-        public int rectWidth = 17;
-        public int numOfLives;
-
-        public State state = State.notStarted;
-
-        public Map(string file)
-        {
-            board = loadMap(file);
-        }
- 
-        List<List<char>> loadMap(string path)
-        {
-            List<List<char>> charMap = new List<List<char>>();
-            string text = File.ReadAllText(path);  //"board.txt"
-
-            List<char> list = new List<char>();
-            foreach (char c in text)
-            {
-                if (c != '\n')
-                {
-                    list.Add(c);
-                }
-            }
-
-            for (int i = 0; i < 22; i++)
-            {
-                List<char> newList = new List<char>();
-                for (int j = 0; j < 19; j++)
-                {
-                    newList.Add(list[20 * i + j]);
-                }
-                charMap.Add(newList);
-            }
-            return charMap;
-        }
-
-        public void redrawMap(List<List<char>> updatedMap, Graphics g)  // tady se nemeni pacman, ale jenom mizi coins, ty ted neresim
-        {
-            for (int y = 0; y < heightCount; y++)
-            {
-                for (int x = 0; x < widthCount; x++)
-                {
-                    char c = updatedMap[y][x];
-                    switch (c)
-                    {
-                        case 'B':
-                            g.FillRectangle(Brushes.DarkGray, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            //g.DrawImage(brick, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            break;
-                        case 'C':
-                            g.FillEllipse(Brushes.Yellow, x * rectWidth + 4, y * rectHeight + 4, rectWidth - 10, rectHeight - 10);
-                            //g.FillRectangle(Brushes.Green, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            //g.DrawImage(Properties.Resources.coin, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            break;
-                        case 'T':
-                            g.FillEllipse(Brushes.Orange, x * rectWidth + 2, y * rectHeight + 2, rectWidth - 7, rectHeight - 7);
-                            //g.DrawImage(Properties.Resources.token, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            break;
-                        //case 'P':
-                        //    g.DrawImage(Properties.Resources._1sx, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                        //    break;
-                        default:
-                            g.FillRectangle(Brushes.Black, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            //g.DrawImage(Properties.Resources.empty, x * rectWidth, y * rectHeight, rectWidth, rectHeight);
-                            break;
-                    }
-                }
-            }
         }
     }
 }
