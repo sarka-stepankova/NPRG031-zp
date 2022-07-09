@@ -254,6 +254,8 @@ namespace PacMan
                     break;
             }
         }
+
+        public abstract void goBackHome();
     }
 
     // the red one
@@ -328,6 +330,12 @@ namespace PacMan
                 targetY = 8;
             }
             // pro pinky - kdyz jde pacman nahoru, tak 4 nahoru a 4 doleva
+        }
+
+        public override void goBackHome()
+        {
+            this.x = 9;
+            this.y = 8;
         }
     }
 
@@ -412,7 +420,7 @@ namespace PacMan
             if (pac.score < 10)
             {
                 targetX = 10;
-                targetY = 8;
+                targetY = 10;
             }
 
             if (state == GhostState.frightened)
@@ -425,6 +433,12 @@ namespace PacMan
                 targetX = 9;
                 targetY = 8;
             }
+        }
+
+        public override void goBackHome()
+        {
+            this.x = 8;
+            this.y = 10;
         }
     }
 
@@ -510,8 +524,14 @@ namespace PacMan
             if (pac.score < 15)
             {
                 targetX = 10;
-                targetY = 9;
+                targetY = 10;
             }
+        }
+
+        public override void goBackHome()
+        {
+            this.x = 9;
+            this.y = 10;
         }
     }
 
@@ -589,6 +609,12 @@ namespace PacMan
                 targetY = 10;
             }
         }
+
+        public override void goBackHome()
+        {
+            this.x = 10;
+            this.y = 10;
+        }
     }
     
     internal class Map
@@ -598,6 +624,7 @@ namespace PacMan
         int heightCount = 22;
         public int rectHeight = 17;
         public int rectWidth = 17;
+        public int numOfLives;
 
         public State state = State.notStarted;
 
