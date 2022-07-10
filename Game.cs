@@ -31,7 +31,7 @@ namespace PacMan
         List<List<char>> loadMap(string path)
         {
             List<List<char>> charMap = new List<List<char>>();
-            string text = File.ReadAllText(path);  //"board.txt"
+            string text = File.ReadAllText(path);
 
             List<char> list = new List<char>();
             foreach (char c in text)
