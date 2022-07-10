@@ -73,8 +73,7 @@ namespace PacMan
         }
         private void setStartObjectsAndVars()
         {
-            string filePath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), Path.Combine(Directory.GetCurrentDirectory(), "board.txt"));
-            map = new Map(filePath);
+            map = new Map("board.txt");
             pac = new Pacman(9, 16, map);
             ghosts = new List<Ghost>();
             blinky = new Blinky(9, 8, Direction.no, rnd); ghosts.Add(blinky);
