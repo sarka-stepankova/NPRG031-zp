@@ -48,7 +48,7 @@ namespace PacMan
                 List<char> newList = new List<char>();
                 for (int j = 0; j < 19; j++)
                 {
-                    newList.Add(list[20 * i + j]);
+                    newList.Add(list[19 * i + j]);
                 }
                 charMap.Add(newList);
             }
