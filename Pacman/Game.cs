@@ -10,7 +10,6 @@ using System.IO;
 namespace PacMan
 {
     enum Direction { no, left, up, right, down };
-    public enum State { notStarted, running, win, loss };
     public enum GhostState { chase, frightened, eaten }
     internal class Map
     {
@@ -20,8 +19,6 @@ namespace PacMan
         public int rectHeight = 17;
         public int rectWidth = 17;
         public int numOfLives;
-
-        public State state = State.notStarted;
 
         public Map(string file)
         {
