@@ -68,7 +68,7 @@ namespace PacMan
             firstLife.Visible = true;
             secondLife.Visible = true;
             thirdLife.Visible = true;
-            scoreBox.Visible = true;
+            scoreBox2.Visible = true;
             scorePicture.Visible = true;
         }
         private void setStartObjectsAndVars()
@@ -82,7 +82,7 @@ namespace PacMan
             clyde = new Clyde(10, 10, Direction.no, rnd); ghosts.Add(clyde);
             pac.map.numOfLives = 3;
             tempDir = Direction.no;
-            scoreBox.Text = pac.score.ToString();
+            scoreBox2.Text = pac.score.ToString();
             firstLife.Visible = true; secondLife.Visible = true; thirdLife.Visible = true;
         }
         private void playGame2_Click(object sender, EventArgs e)
@@ -218,7 +218,7 @@ namespace PacMan
             }
 
             pac.movePacman(tempDir);
-            scoreBox.Text = pac.score.ToString();
+            scoreBox2.Text = pac.score.ToString();
 
             // kdyz Pacman sesbira vsechny dukaty
             if (pac.coins == 0) switchToWinState(sender, e);

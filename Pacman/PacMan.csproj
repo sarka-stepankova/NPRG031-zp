@@ -213,5 +213,10 @@
   <ItemGroup>
     <None Include="Resources\gup.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="board.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
